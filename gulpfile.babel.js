@@ -98,10 +98,10 @@ const SOURCES = [
 // Lint JavaScript
 gulp.task('lint', () => {
   return gulp.src([
-      'src/**/*.js',
-      'gulpfile.babel.js'
-    ])
-    .pipe(reload({stream: true, once: true}))
+    'src/**/*.js',
+    'gulpfile.babel.js'
+  ])
+    .pipe(reload({ stream: true, once: true }))
     .pipe($.jshint())
     .pipe($.jscs())
     .pipe($.jshint.reporter('jshint-stylish'))
@@ -122,7 +122,7 @@ gulp.task('images', () => {
       interlaced: true
     })))
     .pipe(gulp.dest('dist/images'))
-    .pipe($.size({title: 'images'}));
+    .pipe($.size({ title: 'images' }));
 });
 
 // Compile and Automatically Prefix Stylesheets (dev)
@@ -137,7 +137,7 @@ gulp.task('styles:dev', () => {
     }))
     .pipe($.autoprefixer(AUTOPREFIXER_BROWSERS))
     .pipe(gulp.dest('.tmp/styles'))
-    .pipe($.size({title: 'styles'}));
+    .pipe($.size({ title: 'styles' }));
 });
 
 // Compile and Automatically Prefix Stylesheet Templates (production)
@@ -150,7 +150,7 @@ gulp.task('styletemplates', () => {
       precision: 10,
       onError: console.error.bind(console, 'Sass error:')
     }))
-    .pipe($.cssInlineImages({webRoot: 'src'}))
+    .pipe($.cssInlineImages({ webRoot: 'src' }))
     .pipe($.autoprefixer(AUTOPREFIXER_BROWSERS))
     .pipe(gulp.dest('.tmp'))
     // Concatenate Styles
@@ -159,10 +159,10 @@ gulp.task('styletemplates', () => {
     // Minify Styles
     .pipe($.if('*.css.template', $.csso()))
     .pipe($.concat('material.min.css.template'))
-    .pipe($.header(banner, {pkg}))
+    .pipe($.header(banner, { pkg }))
     .pipe($.sourcemaps.write('.'))
     .pipe(gulp.dest('dist'))
-    .pipe($.size({title: 'styles'}));
+    .pipe($.size({ title: 'styles' }));
 });
 
 // Compile and Automatically Prefix Stylesheets (production)
@@ -175,20 +175,20 @@ gulp.task('styles', () => {
       precision: 10,
       onError: console.error.bind(console, 'Sass error:')
     }))
-    .pipe($.cssInlineImages({webRoot: 'src'}))
+    .pipe($.cssInlineImages({ webRoot: 'src' }))
     .pipe($.autoprefixer(AUTOPREFIXER_BROWSERS))
     .pipe(gulp.dest('.tmp'))
     // Concatenate Styles
     .pipe($.concat('material.css'))
-    .pipe($.header(banner, {pkg}))
+    .pipe($.header(banner, { pkg }))
     .pipe(gulp.dest('dist'))
     // Minify Styles
     .pipe($.if('*.css', $.csso()))
     .pipe($.concat('material.min.css'))
-    .pipe($.header(banner, {pkg}))
+    .pipe($.header(banner, { pkg }))
     .pipe($.sourcemaps.write('.'))
     .pipe(gulp.dest('dist'))
-    .pipe($.size({title: 'styles'}));
+    .pipe($.size({ title: 'styles' }));
 });
 
 // Only generate CSS styles for the MDL grid
@@ -202,14 +202,14 @@ gulp.task('styles-grid', () => {
     .pipe(gulp.dest('.tmp'))
     // Concatenate Styles
     .pipe($.concat('material-grid.css'))
-    .pipe($.header(banner, {pkg}))
+    .pipe($.header(banner, { pkg }))
     .pipe(gulp.dest('dist'))
     // Minify Styles
     .pipe($.if('*.css', $.csso()))
     .pipe($.concat('material-grid.min.css'))
-    .pipe($.header(banner, {pkg}))
+    .pipe($.header(banner, { pkg }))
     .pipe(gulp.dest('dist'))
-    .pipe($.size({title: 'styles-grid'}));
+    .pipe($.size({ title: 'styles-grid' }));
 });
 
 // Build with Google's Closure Compiler, requires Java 1.7+ installed.
@@ -231,25 +231,25 @@ gulp.task('closure', () => {
 });
 
 // Concatenate And Minify JavaScript
-gulp.task('scripts', ['lint'], () => {
+gulp.task('scripts', () => {
   return gulp.src(SOURCES)
     .pipe($.if(/mdlComponentHandler\.js/, $.util.noop(), uniffe()))
     .pipe($.sourcemaps.init())
     // Concatenate Scripts
     .pipe($.concat('material.js'))
-    .pipe($.iife({useStrict: true}))
+    .pipe($.iife({ useStrict: true }))
     .pipe(gulp.dest('dist'))
     // Minify Scripts
     .pipe($.uglify({
       sourceRoot: '.',
       sourceMapIncludeSources: true
     }))
-    .pipe($.header(banner, {pkg}))
+    .pipe($.header(banner, { pkg }))
     .pipe($.concat('material.min.js'))
     // Write Source Maps
     .pipe($.sourcemaps.write('.'))
     .pipe(gulp.dest('dist'))
-    .pipe($.size({title: 'scripts'}));
+    .pipe($.size({ title: 'scripts' }));
 });
 
 // Clean Output Directory
@@ -258,10 +258,10 @@ gulp.task('clean', () => del(['dist', '.publish']));
 // Copy package manger and LICENSE files to dist
 gulp.task('metadata', () => {
   return gulp.src([
-      'package.json',
-      'bower.json',
-      'LICENSE'
-    ])
+    'package.json',
+    'bower.json',
+    'LICENSE'
+  ])
     .pipe(gulp.dest('dist'));
 });
 
@@ -282,7 +282,7 @@ gulp.task('all', ['clean'], cb => {
     ['scripts'],
     ['mocha'],
     ['assets', 'pages',
-     'templates', 'images', 'metadata'],
+      'templates', 'images', 'metadata'],
     ['zip'],
     cb);
 });
@@ -291,16 +291,16 @@ gulp.task('all', ['clean'], cb => {
 
 gulp.task('mocha', ['styles'], () => {
   return gulp.src('test/index.html')
-    .pipe($.mochaPhantomjs({reporter: 'tap'}));
+    .pipe($.mochaPhantomjs({ reporter: 'tap' }));
 });
 
 gulp.task('mocha:closure', ['closure'], () => {
   return gulp.src('test/index.html')
     .pipe($.replace('src="../dist/material.js"',
-        'src="../dist/material.closure.min.js"'))
+      'src="../dist/material.closure.min.js"'))
     .pipe($.rename('temp.html'))
     .pipe(gulp.dest('test'))
-    .pipe($.mochaPhantomjs({reporter: 'tap'}))
+    .pipe($.mochaPhantomjs({ reporter: 'tap' }))
     .on('finish', () => del.sync('test/temp.html'))
     .on('error', () => del.sync('test/temp.html'));
 });
@@ -341,8 +341,8 @@ function applyTemplate() {
     };
 
     const templateFile = path.join(
-        __dirname, 'docs', '_templates', `${file.page.layout}.html`);
-    const tpl = swig.compileFile(templateFile, {cache: false});
+      __dirname, 'docs', '_templates', `${file.page.layout}.html`);
+    const tpl = swig.compileFile(templateFile, { cache: false });
 
     file.contents = new Buffer(tpl(data));
     cb(null, file);
@@ -353,7 +353,7 @@ function applyTemplate() {
  * Generates an index.html file for each README in MDL/src directory.
  */
 gulp.task('components', ['demos'], () => {
-  return gulp.src('src/**/README.md', {base: 'src'})
+  return gulp.src('src/**/README.md', { base: 'src' })
     // Add basic front matter.
     .pipe($.header('---\nlayout: component\nbodyclass: component\ninclude_prefix: ../../\n---\n\n'))
     .pipe($.frontMatter({
@@ -377,15 +377,15 @@ gulp.task('components', ['demos'], () => {
  */
 gulp.task('demoresources', () => {
   return gulp.src([
-      'src/**/demos.css',
-      'src/**/demo.css',
-      'src/**/demo.js'
-    ], {base: 'src'})
+    'src/**/demos.css',
+    'src/**/demo.css',
+    'src/**/demo.js'
+  ], { base: 'src' })
     .pipe($.if('*.scss', $.sass({
       precision: 10,
       onError: console.error.bind(console, 'Sass error:')
     })))
-    .pipe($.cssInlineImages({webRoot: 'src'}))
+    .pipe($.cssInlineImages({ webRoot: 'src' }))
     .pipe($.if('*.css', $.autoprefixer(AUTOPREFIXER_BROWSERS)))
     .pipe(gulp.dest('dist/components'));
 });
@@ -405,9 +405,9 @@ gulp.task('demos', ['demoresources'], () => {
 
   const tasks = getComponentFolders().map(component => {
     return gulp.src([
-        path.join('src', component, 'snippets', '*.html'),
-        path.join('src', component, 'demo.html')
-      ])
+      path.join('src', component, 'snippets', '*.html'),
+      path.join('src', component, 'demo.html')
+    ])
       .pipe($.concat('/demo.html'))
       // Add basic front matter.
       .pipe($.header('---\nlayout: demo\nbodyclass: demo\ninclude_prefix: ../../\n---\n\n'))
@@ -461,16 +461,16 @@ gulp.task('pages', ['components'], () => {
  */
 gulp.task('assets', () => {
   return gulp.src([
-      'docs/_assets/**/*',
-      'node_modules/clippy/build/clippy.swf',
-      'node_modules/swfobject-npm/swfobject/src/swfobject.js',
-      'node_modules/prismjs/prism.js',
-      'node_modules/prismjs/components/prism-markup.min.js',
-      'node_modules/prismjs/components/prism-javascript.min.js',
-      'node_modules/prismjs/components/prism-css.min.js',
-      'node_modules/prismjs/components/prism-bash.min.js',
-      'node_modules/prismjs/dist/prism-default/prism-default.css'
-    ])
+    'docs/_assets/**/*',
+    'node_modules/clippy/build/clippy.swf',
+    'node_modules/swfobject-npm/swfobject/src/swfobject.js',
+    'node_modules/prismjs/prism.js',
+    'node_modules/prismjs/components/prism-markup.min.js',
+    'node_modules/prismjs/components/prism-javascript.min.js',
+    'node_modules/prismjs/components/prism-css.min.js',
+    'node_modules/prismjs/components/prism-bash.min.js',
+    'node_modules/prismjs/dist/prism-default/prism-default.css'
+  ])
     .pipe($.if(/\.js/i, $.replace('$$version$$', pkg.version)))
     .pipe($.if(/\.js/i, $.replace('$$hosted_libs_prefix$$', hostedLibsUrlPrefix)))
     .pipe($.if(/\.(svg|jpg|png)$/i, $.imagemin({
@@ -527,17 +527,17 @@ gulp.task('serve', () => {
   watch();
 
   gulp.src('dist/index.html')
-    .pipe($.open({uri: 'http://localhost:5000'}));
+    .pipe($.open({ uri: 'http://localhost:5000' }));
 });
 
 // Generate release archive containing just JS, CSS, Source Map deps
 gulp.task('zip:mdl', () => {
   return gulp.src([
-      'dist/material?(.min)@(.js|.css)?(.map)',
-      'LICENSE',
-      'bower.json',
-      'package.json'
-    ])
+    'dist/material?(.min)@(.js|.css)?(.map)',
+    'LICENSE',
+    'bower.json',
+    'package.json'
+  ])
     .pipe($.zip('mdl.zip'))
     .pipe(gulp.dest('dist'));
 });
@@ -559,9 +559,9 @@ gulp.task('zip:templates', () => {
   // Generate a zip file for each template.
   const generateZips = templates.map(template => {
     return gulp.src([
-        `dist/templates/${template}/**/*.*`,
-        'LICENSE'
-      ])
+      `dist/templates/${template}/**/*.*`,
+      'LICENSE'
+    ])
       .pipe($.rename(path => {
         path.dirname = path.dirname.replace(`dist/templates/${template}`, '');
       }))
@@ -579,10 +579,10 @@ gulp.task('zip', [
 
 gulp.task('genCodeFiles', () => {
   return gulp.src([
-      'dist/material.*@(js|css)?(.map)',
-      'dist/mdl.zip',
-      `dist/${templateArchivePrefix}*.zip`
-    ], {read: false})
+    'dist/material.*@(js|css)?(.map)',
+    'dist/mdl.zip',
+    `dist/${templateArchivePrefix}*.zip`
+  ], { read: false })
     .pipe($.tap(file => {
       codeFiles += ` dist/${path.basename(file.path)}`;
     }));
@@ -704,17 +704,17 @@ gulp.task('publish:staging', () => {
 
 gulp.task('_release', () => {
   return gulp.src([
-      'dist/material?(.min)@(.js|.css)?(.map)',
-      'LICENSE',
-      'README.md',
-      'bower.json',
-      'package.json',
-      '.jscsrc',
-      '.jshintrc',
-      './sr?/**/*',
-      'gulpfile.babel.js',
-      './util?/**/*'
-    ])
+    'dist/material?(.min)@(.js|.css)?(.map)',
+    'LICENSE',
+    'README.md',
+    'bower.json',
+    'package.json',
+    '.jscsrc',
+    '.jshintrc',
+    './sr?/**/*',
+    'gulpfile.babel.js',
+    './util?/**/*'
+  ])
     .pipe(gulp.dest('_release'));
 });
 
@@ -738,9 +738,9 @@ gulp.task('templates:styles', () => {
 
 gulp.task('templates:static', () => {
   return gulp.src('templates/**/*.html')
-  .pipe($.replace('$$version$$', pkg.version))
-  .pipe($.replace('$$hosted_libs_prefix$$', hostedLibsUrlPrefix))
-  .pipe(gulp.dest('dist/templates'));
+    .pipe($.replace('$$version$$', pkg.version))
+    .pipe($.replace('$$hosted_libs_prefix$$', hostedLibsUrlPrefix))
+    .pipe(gulp.dest('dist/templates'));
 });
 
 // This task can be used if you want to test the templates against locally
